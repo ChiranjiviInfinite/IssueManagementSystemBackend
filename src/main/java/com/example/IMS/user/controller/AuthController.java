@@ -4,12 +4,21 @@ import com.example.IMS.user.dto.LoginRequest;
 import com.example.IMS.user.dto.RegisterRequest;
 import com.example.IMS.user.dto.UserResponse;
 import com.example.IMS.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,15 +36,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginRequest loginRequest) {
 
-        userService.validateUser(loginRequest);
+        String token =userService.validateUser(loginRequest);
 
-        var user = userService.findByUsername(loginRequest.getUsername());
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", "Login successful");
+        body.put("status", "success");
+        body.put("token", token);
 
-        UserResponse userResponse = userService.convertToResponse(user);
-
-        return ResponseEntity.ok(userResponse);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
 }

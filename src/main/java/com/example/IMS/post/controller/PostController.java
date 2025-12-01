@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
 
     private final PostService postService;
@@ -64,6 +65,7 @@ public class PostController {
             @PathVariable Long id,
             @Valid @RequestBody PostUpdateRequest updateRequest) {
         PostResponse response = postService.assignUpdate(id, updateRequest);
+        System.out.println("Received update: " + updateRequest.getAssignedUpdate());
         return ResponseEntity.ok(response);
     }
 

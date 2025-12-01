@@ -1,5 +1,6 @@
 package com.example.IMS.user.service.impl;
 
+import com.example.IMS.jwt.service.JWTService;
 import com.example.IMS.user.dto.LoginRequest;
 import com.example.IMS.user.dto.RegisterRequest;
 import com.example.IMS.user.dto.UserResponse;
@@ -15,6 +16,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
 
     @Override
@@ -69,13 +73,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void validateUser(LoginRequest loginRequest) {
-        authenticationManager.authenticate(
+    public String validateUser(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
                         loginRequest.getPassword()
                 )
         );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtService.generateToken(authentication);
     }
 
     public UserResponse convertToResponse(User user){

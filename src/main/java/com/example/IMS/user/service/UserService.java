@@ -11,7 +11,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void validateUser(LoginRequest loginRequest);
+    String validateUser(LoginRequest loginRequest);
 
     UserResponse convertToResponse(User user);
 }
