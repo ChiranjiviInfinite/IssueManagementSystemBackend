@@ -59,7 +59,16 @@ public class PostServiceImpl implements PostService {
             throw new InvalidOperationException("Only DRAFT posts can be submitted for approval");
         }
 
-        post.setStatus(PostStatus.PENDING_APPROVAL);
+        // Check if user has ADMIN role using enum
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName() == RoleType.ADMIN);
+
+        //  Auto-approve if admin
+        if (isAdmin) {
+            post.setStatus(PostStatus.APPROVED);
+        } else {
+            post.setStatus(PostStatus.PENDING_APPROVAL);
+        }
         Post updatedPost = postRepository.save(post);
         return convertToResponse(updatedPost);
     }
