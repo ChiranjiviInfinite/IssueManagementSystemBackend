@@ -28,7 +28,7 @@ All protected routes require a valid **JWT token**.
 | `/{id}/close`            | PUT    | Admin                | Close a post                    | `PostResponse`         |
 | `/{id}/assign-update`    | PUT    | Admin                | Assign update to a post         | `PostResponse`         |
 | `/`                      | GET    | Admin                | Get all posts                   | `List<PostResponse>`   |
-| `/approved`              | GET    | User/Admin           | Get approved posts              | `List<PostResponse>`   |
+| `/approved`              | GET    | User                 | Get approved posts              | `List<PostResponse>`   |
 | `/user/posts`            | GET    | User                 | Get posts by logged-in user     | `List<PostResponse>`   |
 
 ---
